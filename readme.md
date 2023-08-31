@@ -20,4 +20,11 @@ Choose an id for your subscription
 Select your topic "cloud-builds"
 In the type select Push and put your cloud run url inside the input, you can get the url accessing your cloud run function
 
-## 4. Trigger some Cloud build trigger to see the messages comming into your discord channel
+## 4. Test it
+You can teste by Triggering some Cloud build trigger and see the messages comming into your discord channel
+
+## 5. Future improvements
+Add prints for messages
+Handle QUEUED and WORKING statuses
+Use env for colors
+Use env to select which statuses should respond to
