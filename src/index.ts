@@ -7,7 +7,7 @@ const app = express()
 app.use(bodyParser.json())
 
 
-app.get(/^\/(.*)/, async (req, res) => {
+app.all(/^\/(.*)/, async (req, res) => {
   const message = getBuildMessage(req.body)
   await sendDiscordMessage(message)
   return res.json({
@@ -15,7 +15,9 @@ app.get(/^\/(.*)/, async (req, res) => {
   })
 })
 
-const port = process.env.PORT || 3000
+const DEFAULT_PORT = 8080
+const port = process.env.PORT || DEFAULT_PORT
+
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Server listening on port ${port}`)
 })

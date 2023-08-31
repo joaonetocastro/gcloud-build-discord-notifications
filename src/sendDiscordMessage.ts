@@ -1,10 +1,8 @@
 export async function sendDiscordMessage(body: object){
-    console.log(`Calling Discord wtih, JSON.stringify(body)`);
-    const url = ''
-    const result = await fetch(url, {
+    const url = 'https://discord.com/api/webhooks/1146768473163317299/jvMUj5bsKLtchtJ5jMPufORl7adUJO1Yncn4tcDJsTeiSqs_Dwdu8ZnbGkQe5QhNDhDj'
+    await fetch(url, {
         body: JSON.stringify(body),
         method: 'POST',
         headers: { "Content-Type": "application/json" }
     });
-    console.log(result.json());
 }
