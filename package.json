@@ -6,11 +6,13 @@
   "author": "João Neto C. <j.neto111@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "serve": "node -r sucrase/register src/index.ts",
     "build": "tsc --outDir build",
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
     "body-parser": "1.20.2",
+    "dotenv": "^16.3.1",
     "express": "4.18.2",
     "node-fetch": "3.3.2",
     "sucrase": "3.34.0",

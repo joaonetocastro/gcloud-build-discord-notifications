@@ -1,8 +1,8 @@
-FROM node:lts-alpine
+FROM node:18.17.1-alpine
 WORKDIR /app
 
 COPY package.json yarn.lock ./
 
 RUN yarn
 COPY src/* tsconfig.json ./
-RUN yarn build
+RUN yarn serve
