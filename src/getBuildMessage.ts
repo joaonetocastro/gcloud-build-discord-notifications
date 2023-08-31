@@ -1,26 +1,64 @@
+const COLORS = {
+    success: 4979275,
+    info: 5211898,
+    error: 16403275
+}
+
+function getTimeElapsed(start: string | Date, end: string | Date): string {
+    return `${(<any>new Date(end) - <any>new Date(start)) * .001}s`
+}
+
+
 export function getBuildMessage(build: GoogleCloudBuild) {
     const embeds: Embed[] = [];
+
+    const source = build.substitutions.REPO_FULL_NAME
+    const branch = build.substitutions.BRANCH_NAME
+    const commitUrl = build.source.gitSource.url.includes('github.com') ? `${build.source.gitSource.url.replace('.git', '')}/commit/${build.source.gitSource.revision}` : null
+
     const msg = {
-        content: `Build ${build.id} for project ${build.projectId} was a ${build.status}  +
-            took ${(<any>new Date(build.finishTime) - <any>new Date(build.startTime)) * .001}`,
-        tts: build.status === 'FAILURE' ? true : false,
+        tts: false,
         embeds: embeds
     }
+
+    embeds.push({
+        title: `Build for Source ${source} was a ${build.status}`,
+        description: `
+        **id:** ${build.id}
+        **duration:** ${getTimeElapsed(build.startTime, build.finishTime)}
+        **source:** ${source}
+        **branch:** ${branch}
+        ${commitUrl ? `**commit url:** ${commitUrl}` : ''}
+        `,
+        color: COLORS.info
+    })
+
+
     if (build && build.steps) {
         build.steps.forEach(step => {
             let time = '';
             if(step.timing && step.timing.endTime){
-                time = `took ${(<any>new Date(step.timing.endTime) - <any>new Date(step.timing.startTime)) * .001}`
+                time = getTimeElapsed(step.timing.startTime, step.timing.endTime)
             }
             embeds.push({
-                title: step.name,
+                title: step.id,
                 description:
-                    `${step.entrypoint} ${step.args.join(' ')} ${time} and ${step.status}`,
-                color: build.status === 'FAILURE' ? 16714507 : 6618931
+                    `
+                    **docker image:** ${step.name}
+                    **command:** ${step.entrypoint || '{entrypoint}'} ${step.args.join(' ')}
+                    **duration:** ${time}
+                    **status**: ${step.status}`,
+                color: step.status === 'FAILURE' ? COLORS.error : COLORS.success
             });
         });
-        msg.embeds = embeds;
     }
+
+    embeds.push({
+        title: 'See Logs',
+        description: build.logUrl,
+        color: COLORS.info,
+    })
+
     return msg;
 }
 
@@ -30,8 +68,27 @@ export interface Embed {
     color?: number;
 }
 
+interface Source {
+    gitSource: {
+        url: string
+        revision: string
+    }
+}
+
+interface Substitutions {
+    BRANCH_NAME: string;
+    REF_NAME: string;
+    REVISION_ID: string;
+    TRIGGER_NAME: string;
+    COMMIT_SHA: string;
+    REPO_FULL_NAME: string;
+    REPO_NAME: string;
+    SHORT_SHA: string;
+}
+
 export interface GoogleCloudBuild {
     id: string;
+    logUrl: string;
     projectId: string;
     status: string;
     steps?: Step[];
@@ -40,6 +97,8 @@ export interface GoogleCloudBuild {
     finishTime: Date;
     buildTriggerId: string;
     options: Options;
+    substitutions: Substitutions
+    source: Source
 }
 
 export interface Options {
@@ -48,6 +107,7 @@ export interface Options {
 }
 
 export interface Step {
+    id: string;
     name: string;
     args: string[];
     entrypoint: string;

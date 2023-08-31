@@ -9,7 +9,8 @@ app.use(bodyParser.json())
 
 
 app.all(/^\/(.*)/, async (req, res) => {
-  const message = getBuildMessage(req.body)
+  const data = JSON.parse(Buffer.from(req.body.message.data, 'base64').toString('utf8'))
+  const message = getBuildMessage(data)
   await sendDiscordMessage(message)
   return res.json({
     status: 'MESSAGE_SENT'

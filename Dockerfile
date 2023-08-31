@@ -4,5 +4,6 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 RUN yarn
-COPY src/* tsconfig.json ./
-RUN yarn serve
+COPY tsconfig.json ./
+COPY src/* ./src/
+CMD ["yarn", "serve"]
