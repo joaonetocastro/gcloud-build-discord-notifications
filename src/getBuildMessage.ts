@@ -5,7 +5,7 @@ const COLORS = {
 }
 
 function getTimeElapsed(start: string | Date, end: string | Date): string {
-    return `${(<any>new Date(end) - <any>new Date(start)) * .001}s`
+    return `${((<any>new Date(end) - <any>new Date(start)) * .001).toFixed(2)}s`
 }
 
 
@@ -22,7 +22,7 @@ export function getBuildMessage(build: GoogleCloudBuild) {
     }
 
     embeds.push({
-        title: `Build for Source ${source} was a ${build.status}`,
+        title: `Build for ${source} was a ${build.status}`,
         description: `
         **id:** ${build.id}
         **duration:** ${getTimeElapsed(build.startTime, build.finishTime)}
