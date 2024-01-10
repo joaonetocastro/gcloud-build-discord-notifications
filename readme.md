@@ -1,5 +1,5 @@
 # How to use it
-All steps behind are to be done inside google cloud platform
+All steps below should be done inside google cloud platform
 
 ## 1. Create a Pub/Sub Topic called "cloud-builds"
 The name must be exacly cloud-builds because google cloud uses this name to push events for all cloud builds
